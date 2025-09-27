@@ -38,7 +38,7 @@ function showEndOfResults() {
 }
 
 form.addEventListener('submit', onSearch);
-if (loadMoreBtn) loadMoreBtn.addEventListener('click', onLoadMore);
+loadMoreBtn.addEventListener('click', onLoadMore);
 
 async function onSearch(event) {
   event.preventDefault();
@@ -72,8 +72,13 @@ async function onSearch(event) {
     totalHits = data.totalHits;
     createGallery(data.hits);
 
-    if (totalHits > perPage) showLoadMoreButton();
-    else hideLoadMoreButton();
+    const loadedCards = document.querySelectorAll('.gallery .gallery-item').length;
+    if (loadedCards >= totalHits) {
+      hideLoadMoreButton();
+      showEndOfResults();
+    } else {
+      showLoadMoreButton();
+    }
 
   } catch (error) {
     console.error(error);
@@ -100,15 +105,18 @@ async function onLoadMore() {
       return;
     }
 
+    const prevLoaded = document.querySelectorAll('.gallery .gallery-item').length;
     createGallery(data.hits);
 
-    const firstCard = document.querySelector('.gallery .gallery-item');
-    if (firstCard) {
-      const cardHeight = firstCard.getBoundingClientRect().height;
+    // Скрол на дві висоти першої нової картки
+    const firstNewCard = document.querySelectorAll('.gallery .gallery-item')[prevLoaded];
+    if (firstNewCard) {
+      const cardHeight = firstNewCard.getBoundingClientRect().height;
       window.scrollBy({ top: cardHeight * 2, behavior: 'smooth' });
     }
 
-    if (page * perPage >= totalHits) {
+    const loadedCards = document.querySelectorAll('.gallery .gallery-item').length;
+    if (loadedCards >= totalHits) {
       hideLoadMoreButton();
       showEndOfResults();
     } else {
