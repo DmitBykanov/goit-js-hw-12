@@ -14,7 +14,8 @@ export function createGallery(images) {
   if (!images?.length) return;
 
   const markup = images
-    .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
+    .map(
+      ({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
       <li class="gallery-item">
         <a class="gallery-link" href="${largeImageURL}">
           <img class="gallery-image" src="${webformatURL}" alt="${tags}" loading="lazy" />
@@ -25,8 +26,8 @@ export function createGallery(images) {
           <p class="info-item"><b>Comments:</b> ${comments}</p>
           <p class="info-item"><b>Downloads:</b> ${downloads}</p>
         </div>
-      </li>
-    `)
+      </li>`
+    )
     .join('');
 
   gallery.insertAdjacentHTML('beforeend', markup);
@@ -35,19 +36,17 @@ export function createGallery(images) {
 
 export function clearGallery() {
   gallery.innerHTML = '';
+  lightbox.refresh();
 }
 
 export function showLoader() {
-  if (!loader || !loadMoreBtn) return;
-  loadMoreBtn.insertAdjacentElement('beforebegin', loader);
+  if (!loader) return;
   loader.classList.remove('visually-hidden');
-  loader.classList.add('is-loading');
 }
 
 export function hideLoader() {
   if (!loader) return;
   loader.classList.add('visually-hidden');
-  loader.classList.remove('is-loading');
 }
 
 export function showLoadMoreButton() {
